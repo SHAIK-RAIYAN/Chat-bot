@@ -1,0 +1,174 @@
+/* styles.css */
+:root {
+  --black: rgba(0,0,0,1);
+  --white: rgba(255,255,255,1);
+  --dark-grey: rgba(32,32,32,1); /* Slightly lighter than pure black */
+  --light-grey: rgba(240,240,240,1); /* Slightly darker than pure white */
+}
+
+/* Smooth theme transitions */
+body {
+  transition: background-color 0.4s ease, color 0.4s ease;
+}
+
+body.dark-mode {
+  background: var(--black);
+  color: var(--white);
+}
+body.light-mode {
+  background: var(--white);
+  color: var(--black);
+}
+
+.overflow-hidden {
+  overflow: hidden;
+}
+
+.navbar {
+  background: inherit;
+  color: inherit;
+  height: 3.5rem;
+  display: flex;
+  align-items: center;
+  position: relative;
+  border-bottom: 1px solid currentColor;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  transition: background-color 0.4s ease, box-shadow 0.4s ease;
+}
+.navbar .navbar-brand {
+  color: inherit;
+}
+
+.theme-switch {
+  position: relative;
+  display: inline-block;
+  width: 50px;
+  height: 26px;
+  margin-right: 1rem;
+}
+.theme-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-color: currentColor;
+  border-radius: 34px;
+  transition: background-color 0.4s ease;
+}
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 20px;
+  width: 20px;
+  left: 3px;
+  bottom: 3px;
+  background-color: var(--white);
+  border-radius: 50%;
+  transition: transform 0.4s ease, background-color 0.4s ease;
+}
+
+/* Move handle */
+input:checked + .slider:before {
+  transform: translateX(24px);
+}
+
+/* Handle color per theme */
+body.dark-mode .slider:before {
+  background-color: var(--black);
+}
+body.light-mode .slider:before {
+  background-color: var(--white);
+}
+
+.chat-container {
+  position: absolute;
+  top: 3.5rem;
+  bottom: 4.5rem;
+  left: 0;
+  right: 0;
+  overflow-y: auto;
+  padding: 1rem;
+  transition: background-color 0.4s ease;
+}
+
+.message {
+  display: flex;
+  margin-bottom: 0.75rem;
+}
+.message.user .bubble {
+  margin-left: auto;
+  background: var(--white);
+  color: var(--black);
+  transition: background-color 0.4s ease;
+}
+body.light-mode .message.user .bubble {
+  background: var(--light-grey);
+}
+.message.bot .bubble {
+  margin-right: auto;
+  background: var(--dark-grey); /* Slightly lighter than pure black */
+  color: var(--white);
+  transition: background-color 0.4s ease;
+}
+.bubble {
+  padding: 0.75rem 1rem;
+  border-radius: 1rem;
+  max-width: 75%;
+}
+
+.input-footer {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  padding: 0.5rem 1rem;
+  background: inherit;
+  transition: background-color 0.4s ease;
+}
+
+.input-wrapper {
+  display: flex;
+  align-items: center;
+  background: inherit;
+  border: 1px solid currentColor;
+  border-radius: 2rem;
+  padding: 0.25rem 0.5rem;
+  transition: border-color 0.4s ease;
+}
+
+.input-wrapper input {
+  flex: 1;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: inherit;
+  padding: 0.5rem;
+  font-size: 1rem;
+}
+
+.send-btn {
+  background: var(--white);
+  color: var(--black);
+  border: none;
+  border-radius: 50%;
+  width: 2.5rem;
+  height: 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  cursor: pointer;
+  margin-left: 0.5rem;
+  transition: background-color 0.4s ease, color 0.4s ease, transform 0.2s ease;
+}
+.send-btn:hover {
+  transform: scale(1.1);
+}
+
+/* Invert send button in light mode */
+body.light-mode .send-btn {
+  background: var(--black);
+  color: var(--white);
+}
