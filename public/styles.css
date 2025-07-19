@@ -1,14 +1,15 @@
 /* styles.css */
 :root {
-  --black: rgba(0,0,0,1);
-  --white: rgba(255,255,255,1);
-  --dark-grey: rgba(32,32,32,1); /* Slightly lighter than pure black */
-  --light-grey: rgba(240,240,240,1); /* Slightly darker than pure white */
+  --black: rgba(0, 0, 0, 1);
+  --white: rgba(255, 255, 255, 1);
+  --dark-grey: rgba(32, 32, 32, 1);
+  --light-grey: rgba(240, 240, 240, 1);
 }
 
 /* Smooth theme transitions */
 body {
   transition: background-color 0.4s ease, color 0.4s ease;
+  min-height: 100vh; /* Ensure body takes full height */
 }
 
 body.dark-mode {
@@ -32,7 +33,7 @@ body.light-mode {
   align-items: center;
   position: relative;
   border-bottom: 1px solid currentColor;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   transition: background-color 0.4s ease, box-shadow 0.4s ease;
 }
 .navbar .navbar-brand {
@@ -54,7 +55,10 @@ body.light-mode {
 .slider {
   position: absolute;
   cursor: pointer;
-  top: 0; left: 0; right: 0; bottom: 0;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
   background-color: currentColor;
   border-radius: 34px;
   transition: background-color 0.4s ease;
@@ -71,12 +75,10 @@ body.light-mode {
   transition: transform 0.4s ease, background-color 0.4s ease;
 }
 
-/* Move handle */
 input:checked + .slider:before {
   transform: translateX(24px);
 }
 
-/* Handle color per theme */
 body.dark-mode .slider:before {
   background-color: var(--black);
 }
@@ -87,12 +89,13 @@ body.light-mode .slider:before {
 .chat-container {
   position: absolute;
   top: 3.5rem;
-  bottom: 4.5rem;
+  bottom: 5rem; /* Adjusted to ensure no overlap with footer */
   left: 0;
   right: 0;
   overflow-y: auto;
   padding: 1rem;
   transition: background-color 0.4s ease;
+  box-sizing: border-box; /* Ensure padding doesn't cause overflow */
 }
 
 .message {
@@ -110,19 +113,23 @@ body.light-mode .message.user .bubble {
 }
 .message.bot .bubble {
   margin-right: auto;
-  background: var(--dark-grey); /* Slightly lighter than pure black */
+  background: var(--dark-grey);
   color: var(--white);
   transition: background-color 0.4s ease;
 }
 .bubble {
   padding: 0.75rem 1rem;
   border-radius: 1rem;
-  max-width: 75%;
+  max-width: 60%;
+  white-space: pre-wrap;
+  word-wrap: break-word;
 }
 
 .input-footer {
   position: absolute;
-  bottom: 0; left: 0; right: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
   padding: 0.5rem 1rem;
   background: inherit;
   transition: background-color 0.4s ease;
@@ -166,9 +173,70 @@ body.light-mode .message.user .bubble {
 .send-btn:hover {
   transform: scale(1.1);
 }
+.send-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
 
-/* Invert send button in light mode */
 body.light-mode .send-btn {
   background: var(--black);
   color: var(--white);
+}
+
+/* Typing indicator animation */
+.message.loader .bubble {
+  background: var(--dark-grey); /* Match bot bubble */
+  display: flex;
+  align-items: center;
+  min-width: 60px; /* Ensure loader has enough space */
+}
+
+.typing-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.3rem;
+  padding: 0.5rem;
+}
+
+.typing-indicator span {
+  width: 0.6rem;
+  height: 0.6rem;
+  background-color: var(--white);
+  border-radius: 50%;
+  display: inline-block;
+  animation: typing 0.8s infinite ease-in-out;
+}
+
+body.light-mode .typing-indicator span {
+  background-color: var(--black);
+}
+
+.typing-indicator span:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.typing-indicator span:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes typing {
+  0%,
+  80%,
+  100% {
+    transform: scale(0.6);
+    opacity: 0.4;
+  }
+  40% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.typing-indicator .typing-text {
+  font-size: 0.9rem;
+  margin-right: 0.5rem;
+  background: none;
+  animation: none;
+  color: inherit; /* Match bubble text color */
 }
