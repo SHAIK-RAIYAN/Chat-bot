@@ -13,52 +13,39 @@ app.set("views", path.join(__dirname, "views"));
 app.use(express.static(path.join(__dirname, "public")));
 app.use(express.json());
 
-// Store conversation history (in-memory for simplicity)
-let conversationHistory = [];
-
 // Routes
 app.get("/", (req, res) => res.redirect("/chat"));
 app.get("/chat", (req, res) => {
-  // Reset history on new chat session (optional)
-  conversationHistory = [];
   res.render("home");
 });
 
-// Chat endpoint with improved prompt structure
+// Chat endpoint without conversation history
 app.post("/gemini-chat", async (req, res) => {
   const userMessage = req.body.message;
   if (!userMessage) {
     return res.status(400).json({ error: "Message is required" });
   }
 
-  // Improved instruction
-  const instruction =
-    "You are a friendly, helpful assistant named GeminiBot. Respond in a conversational, upbeat tone. Keep replies concise (under 200 words) but informative. If the user input is vague or unclear (e.g., single characters or symbols), politely ask for clarification. Provide relevant answers based on the conversation context.";
-
-  // Build conversation history
-  const newMessage = { role: "user", parts: [{ text: userMessage }] };
-  conversationHistory.push(newMessage);
-
-  // Limit history to last 5 messages to avoid token overflow
-  if (conversationHistory.length > 5) {
-    conversationHistory = conversationHistory.slice(-5);
-  }
+  // Instruction only prompt
+  const prompt = `You are a friendly, helpful assistant. Respond in a professional conversational tone. Keep replies under 200 words but informative.`;
 
   const payload = {
     contents: [
-      { role: "user", parts: [{ text: instruction }] }, // Instruction as first part
-      ...conversationHistory, // Include history
+      {
+        role: "user",
+        parts: [{ text: prompt }, { text: userMessage }],
+      },
     ],
     generationConfig: {
-      temperature: 0.7, // Controls randomness
-      maxOutputTokens: 1024, // Increased for fuller responses
-      topP: 0.9, // Controls diversity
+      temperature: 0.7,
+      maxOutputTokens: 1024,
+      topP: 0.9,
     },
   };
 
   try {
     const url =
-      "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent"; // Updated model name
+      "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent";
     const apiKey = process.env.GEMINI_API_KEY;
 
     const response = await axios.post(url, payload, {
@@ -70,9 +57,6 @@ app.post("/gemini-chat", async (req, res) => {
       response.data?.candidates?.[0]?.content?.parts?.[0]?.text ||
       "Sorry, I couldn't process that.";
 
-    // Add bot response to history
-    conversationHistory.push({ role: "assistant", parts: [{ text: reply }] });
-
     res.json({ reply });
   } catch (err) {
     console.error("Gemini API error:", err.response?.data || err.message);
@@ -80,9 +64,9 @@ app.post("/gemini-chat", async (req, res) => {
   }
 });
 
-// 404 fallback
+// 404 fallback to /chat
 app.use((req, res) => {
-  res.redirect("/chat"); // Redirect to chat for better UX
+  res.redirect("/chat");
 });
 
 // Start server

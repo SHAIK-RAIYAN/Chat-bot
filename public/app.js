@@ -40,7 +40,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // Append a message to the chat
-  function appendMessage(content, sender, isHTML = false) {
+  function appendMessage(content, sender, isHTML = false) { //isHTML to check valid htl script or not
     const msg = document.createElement("div");
     msg.classList.add("message", sender);
     const bubble = document.createElement("div");
